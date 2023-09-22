@@ -1,11 +1,21 @@
-﻿using System.Text;
+﻿using System.Reflection.Metadata.Ecma335;
+using System.Text;
 
-namespace HtmlManager.Dom
+namespace HtmlManager
 {
+    public enum NodeType
+    {
+        ElementNode = 1,
+        AttributeNode = 2,
+        TextNode = 3,
+        CommentNode = 4,
+        DocumentFragmentNode = 11
+    }
+
     public class Node
     {
         public Dictionary<string, string> AttributMap { get; set; } = new();
-        public int NodeType { get; set; }
+        public NodeType NodeType { get; set; }
         public string? NodeValue { get; set; }
         public string? NamespaceURI { get; set; }
         public string? NodeName { get; set; }
@@ -21,7 +31,7 @@ namespace HtmlManager.Dom
         {
             get
             {
-                if (NodeType != ELEMENT_NODE)
+                if (NodeType != NodeType.ElementNode)
                     return null;
 
                 string innerHTML = string.Empty;
@@ -36,20 +46,20 @@ namespace HtmlManager.Dom
         {
             get
             {
-                if (NodeType == ATTRIBUTE_NODE)
+                if (NodeType == NodeType.AttributeNode)
                     return null;
 
-                if (NodeType == COMMENT_NODE)
+                if (NodeType == NodeType.CommentNode)
                     return "<!--" + NodeValue + "-->";
 
-                if (NodeType != ELEMENT_NODE)
+                if (NodeType != NodeType.ElementNode)
                     return NodeValue;
 
                 var attributes = AttributMap;
                 var attributeStr = new StringBuilder();
                 attributeStr.Append(
                     string.Join(" ", attributes.Keys.Select(a => a + "=\"" + attributes[a] + "\""))
-                    );     
+                    );
 
                 if (attributeStr.Length > 0)
                     attributeStr.Insert(0, " ");
@@ -60,15 +70,9 @@ namespace HtmlManager.Dom
 
                 return openingTag + (InnerHTML ?? "") + closingTag;
             }
-        }
+        }        
 
-        public const int ELEMENT_NODE = 1;
-        public const int ATTRIBUTE_NODE = 2;
-        public const int TEXT_NODE = 3;
-        public const int COMMENT_NODE = 4;
-        public const int DOCUMENT_FRAGMENT_NODE = 11;
-
-        public Node(int nodeType, string? nodeName, string? nodeValue, string? namespaceURI)
+        public Node(NodeType nodeType, string? nodeName, string? nodeValue, string? namespaceURI)
         {
             NodeType = nodeType;
             NodeValue = nodeValue ?? string.Empty;
@@ -77,11 +81,11 @@ namespace HtmlManager.Dom
 
             NodeName = NodeType switch
             {
-                ELEMENT_NODE => nodeName?.ToUpper(),
-                ATTRIBUTE_NODE => nodeName?.ToLower(),
+                NodeType.ElementNode => nodeName?.ToUpper(),
+                NodeType.AttributeNode => nodeName?.ToLower(),
                 _ => nodeName,
             };
-        }
+        }        
 
         public void AppendChild(Node node)
         {
@@ -111,7 +115,7 @@ namespace HtmlManager.Dom
 
         public bool GetAttribute(string name)
         {
-            return NodeType == ELEMENT_NODE && AttributMap.ContainsKey(name.ToLower());
+            return NodeType == NodeType.ElementNode && AttributMap.ContainsKey(name.ToLower());
         }
     }
 }

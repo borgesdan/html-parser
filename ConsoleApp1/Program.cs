@@ -1,5 +1,4 @@
 ﻿using HtmlManager;
-using HtmlManager.Dom;
 using HtmlManager.DomManager;
 
 namespace ConsoleApp1
@@ -29,6 +28,8 @@ namespace ConsoleApp1
             Document document = new Document(domBuilder);
             var body = document.Body();
             var id = body.AttributMap["id"];
+
+            body = domBuilder.Fragment.Body;
 
             Console.WriteLine(body);
 

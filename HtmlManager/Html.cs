@@ -129,7 +129,7 @@ namespace HtmlManager
 
         public static bool IsCustomElement(string tagName)
         {
-            return Regex.Match(tagName, "/^[\\w\\d]+-[\\w\\d]+$/").Index != -1;
+            return Regex.Match(tagName, "^[\\w\\d]+-[\\w\\d]+$").Index != -1;
         }
 
         public static bool KnownHTMLElement(string tagName)

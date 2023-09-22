@@ -1,14 +1,14 @@
-﻿using HtmlManager.Dom;
-
-namespace HtmlManager.DomManager
+﻿namespace HtmlManager.DomManager
 {
     public class Document
     {
         private readonly DomBuilder domBuilder;
+        private readonly DocumentFragment currentDocument;
 
         public Document(DomBuilder builder)
         {
             domBuilder = builder;
+            currentDocument = builder.Fragment.Clone();
         }
 
         private Node? SearchByNodeName(Node node, string nodeName)
@@ -27,11 +27,23 @@ namespace HtmlManager.DomManager
             }
 
             return nodeResult;
+        }        
+
+        public Node? Body
+        {
+            get
+            {
+                currentDocument.Body ??= SearchByNodeName(domBuilder.CurrentNode, "body");
+                return currentDocument.Body;
+            }
+            set
+            {
+                currentDocument.Body = value;
+            }
         }
 
-        public Node? Body()
-        {
-            return SearchByNodeName(domBuilder.CurrentNode, "body");
-        }
+        public int ChildElementCount => currentDocument.Node.ChildNodes.Count;
+
+        public IEnumerable<Node> Children => currentDocument.Node.ChildNodes;
     }
 }

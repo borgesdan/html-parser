@@ -1,4 +1,4 @@
-﻿namespace HtmlManager.Dom
+﻿namespace HtmlManager
 {
     public class DomBuilder
     {
@@ -6,9 +6,9 @@
         public Node? CurrentNode { get; set; }
         public bool DisallowActiveAttributes { get; set; }
         public List<Context> Contexts { get; } = new List<Context>();
-        
-        public DomBuilder(bool disallowActiveAttributes) 
-        { 
+
+        public DomBuilder(bool disallowActiveAttributes)
+        {
             Fragment = new DocumentFragment();
             CurrentNode = Fragment.Node;
             DisallowActiveAttributes = disallowActiveAttributes;
@@ -16,9 +16,9 @@
 
         public void PushElement(string tagname, HtmlParseInfo parseInfo, string? nameSpace)
         {
-            var node = nameSpace != null 
-                ? DocumentFragment.CreateElementNS(nameSpace, tagname)
-                : DocumentFragment.CreateElement(tagname);
+            var node = nameSpace != null
+                ? DocumentFragment.CreateElementNS(nameSpace, tagname, Fragment)
+                : DocumentFragment.CreateElement(tagname, Fragment);
 
             node.ParseInfo = parseInfo;
             CurrentNode?.AppendChild(node);
@@ -53,15 +53,15 @@
             else
                 attrNode.NodeValue = value;
 
-            CurrentNode?.Attributes.Add(attrNode);                        
+            CurrentNode?.Attributes.Add(attrNode);
 
             if (CurrentNode != null && attrNode.NodeName != null)
             {
-                if(CurrentNode.AttributMap.ContainsKey(attrNode.NodeName))
+                if (CurrentNode.AttributMap.ContainsKey(attrNode.NodeName))
                     CurrentNode.AttributMap[attrNode.NodeName] = attrNode.NodeValue;
                 else
                     CurrentNode.AttributMap.Add(attrNode.NodeName, attrNode.NodeValue);
-            }                
+            }
         }
 
         public void Text(string text, HtmlParseInfo parseInfo)

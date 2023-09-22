@@ -1,5 +1,4 @@
-﻿using HtmlManager.Dom;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace HtmlManager.CSS

@@ -1,4 +1,4 @@
-﻿namespace HtmlManager.Dom
+﻿namespace HtmlManager
 {
     public class Context
     {
