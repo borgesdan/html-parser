@@ -5,7 +5,7 @@ namespace HtmlManager.CSS
 {
     public class CssParser
     {
-        HtmlStream stream;
+        IHtmlStream stream;
         List<string> warnings = new List<string>();
         List<CssRule> rules = new List<CssRule>();
         List<Interval> comments = new List<Interval>();
@@ -16,7 +16,7 @@ namespace HtmlManager.CSS
         public CssParser(HtmlStream stream)
         {
             this.stream = stream;
-        }
+        }        
 
         public CssBlock Parse()
         {

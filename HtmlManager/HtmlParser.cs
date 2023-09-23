@@ -5,7 +5,7 @@ namespace HtmlManager
 {
     public class HtmlParser
     {
-        readonly HtmlStream stream;
+        readonly IHtmlStream stream;
         readonly DomBuilder domBuilder;
         readonly List<string> warnings = new();        
         Node? activeTagNode = null;
@@ -20,17 +20,17 @@ namespace HtmlManager
             this.cssParser = new CssParser(stream);
         }
 
-        private static char? ContainsAttribute(HtmlStream stream)
+        private static char? ContainsAttribute(IHtmlStream stream)
         {
             return stream.Eat(HtmlRegex.NameStartCharacterSet());
         }
 
-        private static bool IsNextTagParent(HtmlStream stream, string? parentTagName)
+        private static bool IsNextTagParent(IHtmlStream stream, string? parentTagName)
         {
             return stream.FindNext(@"<\/([\w\-]+)\s*>", 1) == parentTagName;
         }
 
-        private static bool IsNextCloseTag(HtmlStream stream)
+        private static bool IsNextCloseTag(IHtmlStream stream)
         {
             return stream.FindNext(@"<\/([\w\-]+)\s*>", 1) != null;
         }
@@ -76,7 +76,7 @@ namespace HtmlManager
             if (domBuilder.CurrentNode != domBuilder.Fragment.Node)
                 throw new Exception("UNCLOSED_TAG");
 
-            return new HtmlParserResult(warnings);
+            return new HtmlParserResult(domBuilder, warnings, new List<string>());
         }
 
         private void BuildTextNode()

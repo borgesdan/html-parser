@@ -9,29 +9,24 @@ namespace ConsoleApp1
         {
             var file = File.ReadAllText(@"E:/html-teste-2.txt");
 
-            var stream = new HtmlStream(file);
+            var htmlStream1 = new HtmlStream(file);
             var domBuilder = new DomBuilder(false);
-            var parser = new HtmlParser(stream, domBuilder);
+
+            var parser = new HtmlParser(htmlStream1, domBuilder);            
 
             try
             {
-                parser.Parse();                
+                Document document = parser.Parse().Document;
+                var body = document.Body;
+
+                body = domBuilder.Fragment.Body;
+
+                Console.WriteLine(body);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
-            
-
-            Console.WriteLine("Parse Complete.");
-
-            Document document = new Document(domBuilder);
-            var body = document.Body();
-            var id = body.AttributMap["id"];
-
-            body = domBuilder.Fragment.Body;
-
-            Console.WriteLine(body);
 
             Console.ReadLine();
         }

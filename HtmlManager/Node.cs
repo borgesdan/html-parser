@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using System.Text;
+﻿using System.Text;
 
 namespace HtmlManager
 {
@@ -12,13 +11,18 @@ namespace HtmlManager
         DocumentFragmentNode = 11
     }
 
+    /// <summary>
+    /// This represents a superficial form of a DOM node which contains most of
+    /// the properties that a regular DOM node would contain, but only the ones
+    /// needed by parse.
+    /// </summary>
     public class Node
     {
         public Dictionary<string, string> AttributMap { get; set; } = new();
         public NodeType NodeType { get; set; }
-        public string? NodeValue { get; set; }
+        public string NodeValue { get; set; }
+        public string NodeName { get; set; }
         public string? NamespaceURI { get; set; }
-        public string? NodeName { get; set; }
         public Node? ParentNode { get; set; }
         public Node? NextSibling { get; private set; }
         public bool IsVoid { get; set; }
@@ -57,6 +61,7 @@ namespace HtmlManager
 
                 var attributes = AttributMap;
                 var attributeStr = new StringBuilder();
+
                 attributeStr.Append(
                     string.Join(" ", attributes.Keys.Select(a => a + "=\"" + attributes[a] + "\""))
                     );
@@ -64,7 +69,7 @@ namespace HtmlManager
                 if (attributeStr.Length > 0)
                     attributeStr.Insert(0, " ");
 
-                var nodeName = NodeName?.ToLower();
+                var nodeName = NodeName.ToLower();
                 var openingTag = "<" + nodeName + attributeStr.ToString() + ">";
                 var closingTag = IsVoid ? "" : "</" + nodeName + ">";
 
@@ -72,7 +77,7 @@ namespace HtmlManager
             }
         }        
 
-        public Node(NodeType nodeType, string? nodeName, string? nodeValue, string? namespaceURI)
+        public Node(NodeType nodeType, string nodeName, string? nodeValue, string? namespaceURI)
         {
             NodeType = nodeType;
             NodeValue = nodeValue ?? string.Empty;
@@ -81,12 +86,15 @@ namespace HtmlManager
 
             NodeName = NodeType switch
             {
-                NodeType.ElementNode => nodeName?.ToUpper(),
-                NodeType.AttributeNode => nodeName?.ToLower(),
+                NodeType.ElementNode => nodeName.ToUpper(),
+                NodeType.AttributeNode => nodeName.ToLower(),
                 _ => nodeName,
             };
-        }        
+        }
 
+        /// <summary>
+        /// Add a node to the current node as a child
+        /// </summary>
         public void AppendChild(Node node)
         {
             if (ChildNodes.Any())
@@ -99,6 +107,9 @@ namespace HtmlManager
             ChildNodes.Add(node);
         }
 
+        /// <summary>
+        /// Create a deep copy of the current node
+        /// </summary>
         public Node Clone()
         {
             var node = new Node(NodeType, NodeName, NodeValue, NamespaceURI)
@@ -113,9 +124,15 @@ namespace HtmlManager
             return node;
         }
 
-        public bool GetAttribute(string name)
+        /// <summary>
+        /// Get the attribute value of an element node
+        /// </summary>
+        public string? GetAttribute(string attributeName)
         {
-            return NodeType == NodeType.ElementNode && AttributMap.ContainsKey(name.ToLower());
+            if(NodeType == NodeType.ElementNode && AttributMap.ContainsKey(attributeName.ToLower()))
+                return AttributMap[attributeName.ToLower()];
+
+            return null;
         }
     }
 }

@@ -2,27 +2,21 @@
 
 namespace HtmlManager
 {
-    public partial class HtmlStream
+    /// <summary>
+    /// HtmlStream is an internal class used for tokenization. 
+    /// </summary>
+    public class HtmlStream : IHtmlStream
     {
         readonly string text = string.Empty;
         int pos = 0;
 
         public int Position => pos;
         public string Text => text;
-        public int TokenStart { get; set; }
-
-        public HtmlStream() { }
+        public int TokenStart { get; set; }        
 
         public HtmlStream(string text)
         {
             this.text = text;
-        }
-
-        public HtmlStream(string text, int pos, int tokenStart)
-        {
-            this.text = text;
-            this.pos = pos;
-            TokenStart = tokenStart;
         }
 
         /// <summary>
@@ -69,25 +63,7 @@ namespace HtmlManager
 
             if (pos < 0)
                 pos = 0;
-        }
-
-        public char? Eat(string match)
-        {
-            if (End())
-                return null;
-
-            var character = Peek();
-
-            if (character != null)
-            {
-                var characterString = character.ToString();
-
-                if (!string.IsNullOrEmpty(characterString) && Regex.IsMatch(characterString, match, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase))
-                    return Next();
-            }
-
-            return null;
-        }
+        }        
 
         /// <summary>
         /// Takes a regular expression. If the next character in
@@ -110,22 +86,7 @@ namespace HtmlManager
             }                
 
             return null;
-        }
-
-        public bool EatWhile(string matcher)
-        {
-            var wereAnyEaten = false;
-
-            while (!End())
-            {
-                if (Eat(matcher) != null)
-                    wereAnyEaten = true;
-                else
-                    break;
-            }
-
-            return wereAnyEaten;
-        }
+        }        
 
         /// <summary>
         /// Repeatedly calls `eat()` with the given argument,
@@ -150,9 +111,7 @@ namespace HtmlManager
         /// Is a shortcut for `eatWhile()` when matching
         /// white-space (including newlines).
         /// </summary>
-        public bool EatSpace() => EatWhile(HtmlRegex.WhiteSpaceAndEscaped());
-
-        public bool EatCssWhile(string matcher) => EatCssWhile(new Regex(matcher));
+        public bool EatSpace() => EatWhile(HtmlRegex.WhiteSpaceAndEscaped());       
 
         /// <summary>
         /// Is like `eatWhile()`, but it
