@@ -31,8 +31,8 @@
         public void PushElement(string tagname, HtmlParseInfo parseInfo, string? nameSpace)
         {
             var node = nameSpace != null
-                ? DocumentFragment.CreateElementNS(nameSpace, tagname, Fragment)
-                : DocumentFragment.CreateElement(tagname, Fragment);
+                ? DocumentFragment.CreateElementNS(nameSpace, tagname)
+                : DocumentFragment.CreateElement(tagname);
 
             node.ParseInfo = parseInfo;
             CurrentNode.AppendChild(node);
@@ -87,10 +87,8 @@
 
             if (CurrentNode != null && !string.IsNullOrEmpty(attrNode.NodeName))
             {
-                if (CurrentNode.AttributMap.ContainsKey(attrNode.NodeName))
-                    CurrentNode.AttributMap[attrNode.NodeName] = attrNode.NodeValue;
-                else
-                    CurrentNode.AttributMap.Add(attrNode.NodeName, attrNode.NodeValue);
+                //Se já existir o atributo?
+                CurrentNode.SetAttribute(attrNode.NodeName, attrNode.NodeValue, true);                
             }
         }
 

@@ -5,6 +5,10 @@
         private readonly DocumentFragment sourceDocument;
         private readonly DocumentFragment currentDocument;
 
+        private Node? body;
+        private Node? head;
+        private Node? title;
+
         public Document(DocumentFragment document)
         {
             sourceDocument = document;
@@ -53,15 +57,15 @@
         {
             get
             {
-                currentDocument.Body ??= SearchByNodeName(currentDocument.Node, "body");
-                return currentDocument.Body;
+                body ??= SearchByNodeName(currentDocument.Node, "body");
+                return body;
             }
             set
             {
                 if (value is not null && (value.NodeType != NodeType.ElementNode || value.NodeName.ToLower() != "body" || value.NodeName.ToLower() != "frameset"))
                     throw new FormatException("The value contains an incorret NodeType or NodeName.");
 
-                currentDocument.Body = value;
+                body = value;
             }
         }
 
@@ -69,15 +73,15 @@
         {
             get
             {
-                currentDocument.Head ??= SearchByNodeName(currentDocument.Node, "head");
-                return currentDocument.Head;
+                head ??= SearchByNodeName(currentDocument.Node, "head");
+                return head;
             }
             set
             {
                 if (value is not null && (value.NodeType != NodeType.ElementNode || value.NodeName.ToLower() != "head"))
                     throw new FormatException("The value contains an incorret NodeType or NodeName.");
 
-                currentDocument.Body = value;
+                head = value;
             }
         }
 
@@ -85,15 +89,15 @@
         {
             get
             {
-                currentDocument.Title ??= SearchByNodeName(currentDocument.Node, "title");
-                return currentDocument.Title;
+                title ??= SearchByNodeName(currentDocument.Node, "title");
+                return title;
             }
             set
             {
                 if (value is not null && (value.NodeType != NodeType.ElementNode || value.NodeName.ToLower() != "title"))
                     throw new FormatException("The value contains an incorret NodeType or NodeName.");
 
-                currentDocument.Title = value;
+                title = value;
             }
         }
 

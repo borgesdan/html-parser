@@ -18,7 +18,8 @@ namespace HtmlManager
     /// </summary>
     public class Node
     {
-        public Dictionary<string, string> AttributMap { get; set; } = new();
+        private Dictionary<string, string> attributMap = new();
+
         public NodeType NodeType { get; set; }
         public string NodeValue { get; set; }
         public string NodeName { get; set; }
@@ -59,7 +60,7 @@ namespace HtmlManager
                 if (NodeType != NodeType.ElementNode)
                     return NodeValue;
 
-                var attributes = AttributMap;
+                var attributes = attributMap;
                 var attributeStr = new StringBuilder();
 
                 attributeStr.Append(
@@ -118,7 +119,7 @@ namespace HtmlManager
                 IsVoid = IsVoid,
                 ChildNodes = ChildNodes.Select(c => c.Clone()).ToList(),
                 Attributes = Attributes.Select(c => c.Clone()).ToList(),
-                AttributMap = AttributMap
+                attributMap = attributMap
             };
 
             return node;
@@ -129,10 +130,43 @@ namespace HtmlManager
         /// </summary>
         public string? GetAttribute(string attributeName)
         {
-            if(NodeType == NodeType.ElementNode && AttributMap.ContainsKey(attributeName.ToLower()))
-                return AttributMap[attributeName.ToLower()];
+            if (NodeType == NodeType.ElementNode && attributMap.ContainsKey(attributeName.ToLower()))
+                return attributMap[attributeName.ToLower()];
 
             return null;
+        }
+
+        /// <summary>
+        /// Set the attribute value of an element node.
+        /// </summary>
+        public bool SetAttribute(string attributeName, string attributeValue, bool overwrite = false)
+        {
+            if (NodeType != NodeType.ElementNode)
+                return false;
+
+            if (attributMap.ContainsKey(attributeName.ToLower()))
+            {
+                if (!overwrite)
+                    return false;
+                else
+                    attributMap[attributeName.ToLower()] = attributeValue.ToLower();
+
+                return true;
+            }
+
+            attributMap.Add(attributeName.ToLower(), attributeValue.ToLower());
+            return true;
+        }
+
+        public void RemoveAttribute(string attributeName)
+        {
+            if (NodeType == NodeType.ElementNode && attributMap.ContainsKey(attributeName.ToLower()))
+                attributMap.Remove(attributeName.ToLower());
+        }
+
+        public bool ContainsAttribute(string attributeName)
+        {
+            return attributMap.ContainsKey(attributeName.ToLower());
         }
     }
 }
