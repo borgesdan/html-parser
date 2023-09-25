@@ -80,17 +80,16 @@ namespace HtmlManager.CSS
             var text = token.Value;        
             var stripped = StripComments(text, token.Interval.Start);
 
-            text = Regex.Replace(text, @"/^\s +/", "");
-            text = Regex.Replace(text, @"/^\/\*[\w\W]*?\*\/\s*/", "");
+            text = Regex.Replace(text, @"^\s +", "");
+            text = Regex.Replace(text, @"^\/\*[\w\W]*?\*\/\s*", "");
             int ntSize = text.Length;
-            int tSize;
             token.Interval.Start += ntSize;
             text = string.Join("", text.Split("").Reverse());
-            text = Regex.Replace(text, @"/^\s+/", "");
-            text = Regex.Replace(text, @"/^\/\*[\w\W]*?\*\/\s*/", "");
+            text = Regex.Replace(text, @"^\s+", "");
+            text = Regex.Replace(text, @"^\/\*[\w\W]*?\*\/\s*", "");
 
             ntSize = text.Length;
-            token.Interval.End -= tSize = ntSize;
+            token.Interval.End -= ntSize;
             token.Value = stripped;
         }
         
