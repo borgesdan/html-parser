@@ -16,7 +16,7 @@
         {
             return new DocumentFragment
             {
-                Node = Node.Clone(),
+                Node = this.Node.Clone(),
             };
         }
 
@@ -47,21 +47,21 @@
 
         private static void GetElements(Node node, DocumentFragment documentFragment)
         {
-            var nodeName = node.NodeName.ToLower();
+            //var nodeName = node.NodeName.ToLower();
 
-            switch (nodeName)
-            {
-                case "body":
-                case "frameset":
-                    documentFragment.Body = node;
-                    break;
-                case "head":
-                    documentFragment.Head = node;
-                    break;
-                case "title":
-                    documentFragment.Title = node;
-                    break;
-            }
+            //switch (nodeName)
+            //{
+            //    case "body":
+            //    case "frameset":
+            //        documentFragment.Body = node;
+            //        break;
+            //    case "head":
+            //        documentFragment.Head = node;
+            //        break;
+            //    case "title":
+            //        documentFragment.Title = node;
+            //        break;
+            //}
         }
     }
 }

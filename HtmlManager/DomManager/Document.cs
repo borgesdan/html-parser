@@ -2,7 +2,6 @@
 {
     public class Document
     {
-        private readonly DocumentFragment sourceDocument;
         private readonly DocumentFragment currentDocument;
 
         private Node? body;
@@ -11,8 +10,7 @@
 
         public Document(DocumentFragment document)
         {
-            sourceDocument = document;
-            currentDocument = document.Clone();
+            currentDocument = document;
         }
 
         private Node? SearchByNodeName(Node node, string nodeName)

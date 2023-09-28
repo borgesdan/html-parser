@@ -28,7 +28,7 @@ namespace HtmlManager
         public Node? NextSibling { get; private set; }
         public bool IsVoid { get; set; }
         public List<Node> ChildNodes { get; private set; } = new List<Node>();
-        public List<Node> Attributes { get; set; } = new List<Node>();
+        public List<Node> Attributes { get; private set; } = new List<Node>();
         public DocumentFragment? OwnerDocument { get; set; }
         public HtmlParseInfo? ParseInfo { get; set; }
 
@@ -113,14 +113,12 @@ namespace HtmlManager
         /// </summary>
         public Node Clone()
         {
-            var node = new Node(NodeType, NodeName, NodeValue, NamespaceURI)
-            {
-                NextSibling = NextSibling?.Clone(),
-                IsVoid = IsVoid,
-                ChildNodes = ChildNodes.Select(c => c.Clone()).ToList(),
-                Attributes = Attributes.Select(c => c.Clone()).ToList(),
-                attributMap = attributMap
-            };
+            var node = new Node(NodeType, NodeName, NodeValue, NamespaceURI);
+            node.NextSibling = this.NextSibling?.Clone();
+            node.IsVoid = this.IsVoid;
+            node.ChildNodes = this.ChildNodes.Select(c => c.Clone()).ToList();
+            node.Attributes = this.Attributes.Select(c => c.Clone()).ToList();
+            node.attributMap = this.attributMap;
 
             return node;
         }

@@ -1,5 +1,4 @@
 ﻿using HtmlManager;
-using HtmlManager.DomManager;
 
 namespace ConsoleApp1
 {
@@ -7,7 +6,8 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            var file = File.ReadAllText(@"E:/html-teste-2.txt");
+            //var file = File.ReadAllText(@"E:/html-teste-2.txt");
+            var file = File.ReadAllText(@"E:/psly.html");
 
             var htmlStream1 = new HtmlStream(file);
             var domBuilder = new DomBuilder(false);
@@ -16,12 +16,8 @@ namespace ConsoleApp1
 
             try
             {
-                Document document = parser.Parse().Document;
-                var body = document.Body;
-
-                body = domBuilder.Fragment.Body;
-
-                Console.WriteLine(body);
+                var result = parser.Parse();
+                Console.WriteLine("Concluído");
             }
             catch (Exception ex)
             {
